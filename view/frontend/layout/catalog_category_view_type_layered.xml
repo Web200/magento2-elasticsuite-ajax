@@ -3,7 +3,7 @@
     <body>
         <referenceBlock name="content" >
             <block class="Magento\Framework\View\Element\Template" name="web200.navigation.ajax"
-                   template="Web200_ElasticsuiteAjax::layer/init.phtml" />
+                   template="Web200_ElasticsuiteAjax::layer/init.phtml" ifconfig="smile_elasticsuite_ajax_settings/general/active" />
         </referenceBlock>
     </body>
 </page>
