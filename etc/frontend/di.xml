@@ -4,4 +4,8 @@
         <plugin name="web200_elasticsuite_ajax_add_catalog_toolbar_options"
                 type="Web200\ElasticsuiteAjax\Plugin\AddCatalogToolbarOptions"/>
     </type>
+    <type name="Smile\ElasticsuiteCatalog\Block\Navigation\Renderer\Slider">
+        <plugin name="web200_elasticsuite_ajax_add_slider_toobar_options"
+                type="Web200\ElasticsuiteAjax\Plugin\AddSliderToolbarOptions"/>
+    </type>
 </config>

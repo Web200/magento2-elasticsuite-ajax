@@ -20,7 +20,7 @@ define(
                     } else {
                         item.is_selected = false;
                     }
-                    item.url = elasticsuiteUrl.buildUrl(self.filterName, item.label);
+                    item.url = elasticsuiteUrl.buildFilterUrl(self.filterName, item.label);
 
                     finalItems.push(item);
                 });

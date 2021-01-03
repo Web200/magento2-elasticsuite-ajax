@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Web200\ElasticsuiteAjax\Plugin;
 
-use Magento\Catalog\Block\Product\ProductList\Toolbar;
-use Magento\Framework\Serialize\Serializer\Json;
+use Smile\ElasticsuiteCatalog\Block\Navigation\Renderer\Slider;
 use Web200\ElasticsuiteAjax\Provider\Config;
+use Magento\Framework\Serialize\Serializer\Json;
 
 /**
- * Class AddCatalogToolbarOptions
+ * Class AddSliderToolbarOptions
  *
  * @package   Web200\ElasticsuiteAjax\Plugin
  * @author    Web200 <contact@web200.fr>
- * @copyright 2020 Web200
+ * @copyright 2021 Web200
  * @license   https://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://www.web200.fr/
  */
-class AddCatalogToolbarOptions
+class AddSliderToolbarOptions
 {
     /**
      * Config
@@ -47,25 +47,21 @@ class AddCatalogToolbarOptions
     }
 
     /**
-     * Add catalog toolbar options
+     * Add slider toolbar options
      *
-     * @param Toolbar $subject
-     * @param         $result
-     * @param mixed[] $customOptions
+     * @param Slider                                                      $subject
+     * @param                                                             $result
      *
      * @return string
      */
-    public function afterGetWidgetOptionsJson(
-        Toolbar $subject,
-        $result,
-        array $customOptions = []
-    ): string {
+    public function afterGetJsonConfig(Slider $subject, $result): string
+    {
         /** @var string[] $jsonData */
         $jsonData = $this->json->unserialize($result);
-        if (!isset($jsonData['productListToolbarForm'])) {
+        if ($jsonData === null) {
             return $result;
         }
-        $jsonData['productListToolbarForm']['ajax'] = $this->config->isActive();
+        $jsonData['ajax'] = $this->config->isActive();
 
         return $this->json->serialize($jsonData);
     }

@@ -7,6 +7,9 @@ let config = {
     },
     config: {
         mixins: {
+            'Smile_ElasticsuiteCatalog/js/range-slider-widget': {
+                'Web200_ElasticsuiteAjax/js/range-slider-widget-mixin': true
+            },
             'Smile_ElasticsuiteCatalog/js/attribute-filter': {
                 'Web200_ElasticsuiteAjax/js/attribute-filter-mixin': true
             },
