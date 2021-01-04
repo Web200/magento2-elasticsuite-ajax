@@ -16,11 +16,19 @@ define([
             let params = [];
             let filterIndex = 0;
             let findCurrentValue = false;
+            let multipleFilterValues = this.getMultipleFilterValues();
             $.each(self.getAllFilterValues(), function (indexFilter, filterName) {
                 let values = self.getFilterValues(filterName);
                 $.each(values, function (index, itemLabel) {
                     if (!(currentFilterName === filterName && itemLabel === currentLabel)) {
-                        params.push(filterName + '[' + index + ']=' + itemLabel);
+                        if (filterName === 'p') {
+                            return false;
+                        }
+                        if (filterName.includes(multipleFilterValues)) {
+                            params.push(filterName + '[' + index + ']=' + itemLabel);
+                        } else {
+                            params.push(filterName + '=' + itemLabel);
+                        }
                     } else {
                         findCurrentValue = true;
                     }
@@ -39,6 +47,15 @@ define([
         },
         getAllFilterValues: function () {
             return _.uniq(Array.from(this.urlParams.keys()));
+        },
+        getMultipleFilterValues: function () {
+            let filterValue = [];
+            requirejs('uiRegistry').filter(function(item){
+                if (item.name && item.name.match(/Filter$/)) {
+                    filterValue.push(item.filterName);
+                }
+            });
+            return filterValue;
         },
         _updateLayer: function (url, replaceParam, replaceValue) {
             let self = this;
@@ -64,6 +81,12 @@ define([
                         if ($.fn.applyBindings != undefined) {
                             $(self.options.listFilterContainer).applyBindings();
                         }
+                        $('.swatch-attribute.swatch-layered .swatch-option').each(function(index) {
+                            let swatch = $(this);
+                            if (swatch.attr('data-option-type') == 1) {
+                                swatch.css('background', swatch.attr('data-option-tooltip-value'));
+                            }
+                        });
                     } catch (e) {
                     }
                 },
