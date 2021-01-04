@@ -7,3 +7,9 @@ Magento 2 Module to add ajax navigation to elasticsuite module
 ```
 $ composer require "web200/magento-elasticsuite-ajax":"*"
 ```
+
+
+## Demo
+
+[![IMAGE ALT TEXT](https://pic.infini.fr/rScn8xFj/c7AaXbaj.jpg)](https://www.youtube.com/watch?v=UYvmDOHwzuM "Elasticsuite Ajax Navigation")
+
