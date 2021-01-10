@@ -56,7 +56,9 @@ define([
             });
 
             $(document).on('click', self.options.linkFilterItem, function (e) {
-                elasticsuiteUrl._updateLayer(this.href);
+                if (e.target.tagName !== 'A') {
+                    elasticsuiteUrl._updateLayer(this.href);
+                }
                 e.preventDefault();
             });
 
