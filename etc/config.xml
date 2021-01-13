@@ -5,6 +5,9 @@
             <general>
                 <active>1</active>
             </general>
+            <infinite>
+                <active>1</active>
+            </infinite>
         </smile_elasticsuite_ajax_settings>
     </default>
 </config>

@@ -1,8 +1,7 @@
 define([
     'jquery',
     'mage/template',
-    'elasticsuiteUrl',
-], function ($, mageTemplate, elasticsuiteUrl) {
+], function ($, mageTemplate) {
     'use strict';
 
     return function (widget) {
@@ -18,7 +17,7 @@ define([
                     to   : this.to * (1 / this.rate)
                 };
                 let url = mageTemplate(this.options.urlTemplate)(range);
-                elasticsuiteUrl._updateLayer(url);
+                $('body').elasticsuiteAjax('updateLayer', url);
             }
         });
 

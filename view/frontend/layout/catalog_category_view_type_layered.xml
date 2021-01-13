@@ -2,7 +2,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceBlock name="content" >
-            <block class="Magento\Framework\View\Element\Template" name="web200.navigation.ajax"
+            <block class="Web200\ElasticsuiteAjax\Block\Catalog" name="web200.navigation.ajax"
                    template="Web200_ElasticsuiteAjax::layer/init.phtml" ifconfig="smile_elasticsuite_ajax_settings/general/active" />
         </referenceBlock>
     </body>

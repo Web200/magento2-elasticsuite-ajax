@@ -1,7 +1,20 @@
+<?php
+
+use Web200\ElasticsuiteAjax\Block\Catalog;
+
+?>
+<?php /** @var Catalog $block */ ?>
 <script type="text/x-magento-init">
     {
         "body": {
-            "elasticsuiteAjax": {}
+            "elasticsuiteAjax": {
+                "items": {
+                    "pageSize": "<?= $this->getPageSize() ?>",
+                    "size": "<?= $this->getSize() ?>",
+                    "curPage": "<?= $this->getCurPage() ?>"
+                },
+                "infinite": <?= $block->isInfiniteActive() ? 'true' : 'false' ?>
+            }
         }
     }
 </script>

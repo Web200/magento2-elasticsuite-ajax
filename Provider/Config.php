@@ -19,11 +19,17 @@ use Magento\Store\Model\ScopeInterface;
 class Config
 {
     /**
-     * Active
+     * General Active
      *
      * @var string GENERAL_ACTIVE
      */
     public const GENERAL_ACTIVE = 'smile_elasticsuite_ajax_settings/general/active';
+    /**
+     * Infinite Active
+     *
+     * @var string INFINITE_ACTIVE
+     */
+    public const INFINITE_ACTIVE = 'smile_elasticsuite_ajax_settings/infinite/active';
     /**
      * Description $scopeConfig field
      *
@@ -55,6 +61,22 @@ class Config
     {
         return (bool)$this->scopeConfig->getValue(
             self::GENERAL_ACTIVE,
+            ScopeInterface::SCOPE_STORES,
+            $store
+        );
+    }
+
+    /**
+     * Is active
+     *
+     * @param mixed $store
+     *
+     * @return bool
+     */
+    public function isInfiniteActive($store = null): bool
+    {
+        return (bool)$this->scopeConfig->getValue(
+            self::INFINITE_ACTIVE,
             ScopeInterface::SCOPE_STORES,
             $store
         );

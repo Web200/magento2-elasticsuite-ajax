@@ -10,6 +10,7 @@ use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\View\LayoutInterface;
 use Magento\Framework\View\Result\Page;
+use Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\Fulltext\Collection;
 
 /**
  * Class AfterCategoryView
@@ -59,11 +60,18 @@ class AfterCategoryView
         $layout = $page->getLayout();
         /** @var ListProduct $productList */
         $productList = $layout->getBlock('category.products.list');
+        /** @var string $productListHtml */
+        $productListHtml = $productList->toHtml();
+        /** @var Collection $productList */
+        $productCollection = $productList->getLoadedProductCollection();
         /** @var Json $resultJson */
         $resultJson = $this->resultJsonFactory->create();
         $resultJson->setData([
-            'productList'       => $productList->toHtml(),
-            'listFilterOptions' => $layout->getBlock('catalog.leftnav')->toHtml()
+            'productList'       => $productListHtml,
+            'listFilterOptions' => $layout->getBlock('catalog.leftnav')->toHtml(),
+            'pageSize'          => $productCollection->getPageSize(),
+            'size'              => $productCollection->getSize(),
+            'curPage'           => $productCollection->getCurPage(),
         ]);
 
         return $resultJson;
