@@ -11,25 +11,7 @@ $ composer require "web200/magento-elasticsuite-ajax":"*"
 ## Features
 
 * Ajax navigation on category pages (Categories / Swatches / List)
-* Infinite navigation pages.
-Override ElasticsuiteAjax/view/frontend/templates/layer/init.phtml and add infinite param
-
-```
-<script type="text/x-magento-init">
-    {
-        "body": {
-            "elasticsuiteAjax": {
-                "items": {
-                    "pageSize": "<?= $this->getPageSize() ?>",
-                    "size": "<?= $this->getSize() ?>",
-                    "curPage": "<?= $this->getCurPage() ?>"
-                },
-                "infinite": true
-            }
-        }
-    }
-</script>
-```
+* Infinite navigation pages. (Can be enable / disable in Store > Configuration > Elasticsuite > Ajax Settings)
 
 
 
