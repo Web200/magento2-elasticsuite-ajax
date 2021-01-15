@@ -1,8 +1,8 @@
 define([
     'jquery',
     'elasticsuiteUrl',
-    'jquery/ui',
-], function ($, elasticsuiteUrl, uiRegistry) {
+    'jquery-ui-modules/widget'
+], function ($, elasticsuiteUrl) {
     'use strict';
 
     $.widget('mage.elasticsuiteAjax', {
