@@ -21,7 +21,7 @@ define([
                         if (filterName === 'p') {
                             return false;
                         }
-                        if (filterName.includes(multipleFilterValues)) {
+                        if (_.contains(multipleFilterValues, filterName)) {
                             params.push(filterName + '[' + index + ']=' + itemLabel);
                         } else {
                             params.push(filterName + '=' + itemLabel);
