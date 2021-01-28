@@ -10,6 +10,8 @@ use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\View\LayoutInterface;
 use Magento\Framework\View\Result\Page;
+use Smile\ElasticsuiteCatalog\Block\Navigation;
+use Smile\ElasticsuiteCatalog\Model\Layer\Filter\Attribute;
 use Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\Fulltext\Collection;
 
 /**
@@ -69,11 +71,39 @@ class AfterCategoryView
         $resultJson->setData([
             'productList'       => $productListHtml,
             'listFilterOptions' => $layout->getBlock('catalog.leftnav')->toHtml(),
+            'filterItems'       => $this->getFilterItems($layout),
             'pageSize'          => $productCollection->getPageSize(),
             'size'              => $productCollection->getSize(),
             'curPage'           => $productCollection->getCurPage(),
         ]);
 
         return $resultJson;
+    }
+
+    /**
+     * Get filter items
+     * @return string[]
+     */
+    protected function getFilterItems(LayoutInterface $layout): array
+    {
+        /** @var Navigation $leftNavBlock */
+        $leftNavBlock = $layout->getBlock('catalog.leftnav');
+
+        /** @var string[] $items */
+        $items = [];
+        /** @var mixed[] $filters */
+        $filters = $leftNavBlock->getFilters();
+        /** @var mixed $filter */
+        foreach ($filters as $filter) {
+            /** @var string $datascope */
+            $datascope = $filter->getRequestVar() . 'Filter';
+            if (is_a($filter, Attribute::class)) {
+                $items[$datascope] = [];
+                foreach ($filter->getItems() as $item) {
+                    $items[$datascope][] = $item->toArray(['label', 'count', 'url', 'is_selected']);
+                }
+            }
+        }
+        return $items;
     }
 }
