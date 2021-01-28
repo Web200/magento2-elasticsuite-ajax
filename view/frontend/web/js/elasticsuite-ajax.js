@@ -1,8 +1,10 @@
 define([
     'jquery',
+    'underscore',
     'elasticsuiteUrl',
+    'uiRegistry',
     'jquery-ui-modules/widget'
-], function ($, elasticsuiteUrl) {
+], function ($, _, elasticsuiteUrl, uiRegistry) {
     'use strict';
 
     $.widget('mage.elasticsuiteAjax', {
@@ -137,6 +139,15 @@ define([
             $(self.options.listFilterContainer).replaceWith(response.listFilterOptions);
             $('.category-list-view').html(response.productList);
             $(self.options.listFilterContainer).trigger('contentUpdated');
+
+            _.each(response.filterItems, function(items, filterName) {
+                uiRegistry.filter(function(component){
+                    if (component.name === filterName) {
+                        uiRegistry.get(component).reloadItems(items)
+                    }
+                });
+            });
+
             $(document).trigger('contentUpdated');
             if ($.fn.applyBindings != undefined) {
                 $(self.options.listFilterContainer).applyBindings();

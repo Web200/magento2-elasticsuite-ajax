@@ -26,6 +26,9 @@ define(
                 });
                 return finalItems;
             },
+            reloadItems: function(items) {
+                this.items = items.map(this.addItemId.bind(this));
+            },
             reload: function () {
                 this.fulltextSearch(null);
                 this.onShowLess();

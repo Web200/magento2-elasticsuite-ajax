@@ -64,7 +64,7 @@ define([
             }
         },
         reloadAttributeFilter: function () {
-            requirejs('uiRegistry').filter(function(item){
+            uiRegistry.filter(function(item){
                 if (item.name && item.name.match(/Filter$/)) {
                     uiRegistry.get(item).reload();
                 }
