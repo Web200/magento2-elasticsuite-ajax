@@ -61,6 +61,10 @@ class AddSliderToolbarOptions
         if ($jsonData === null) {
             return $result;
         }
+        /** @var \Magento\Catalog\Model\Layer\Filter\AbstractFilter $filter */
+        $filter = $subject->getFilter();
+
+        $jsonData['requestVar'] = $filter->getRequestVar();
         $jsonData['ajax'] = $this->config->isActive();
 
         return $this->json->serialize($jsonData);

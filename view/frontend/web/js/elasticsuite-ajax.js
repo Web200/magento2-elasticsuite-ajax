@@ -1,10 +1,9 @@
 define([
     'jquery',
-    'underscore',
     'elasticsuiteUrl',
     'uiRegistry',
     'jquery-ui-modules/widget'
-], function ($, _, elasticsuiteUrl, uiRegistry) {
+], function ($, elasticsuiteUrl, uiRegistry) {
     'use strict';
 
     $.widget('mage.elasticsuiteAjax', {
@@ -18,10 +17,12 @@ define([
             linkFilterRemove: '.filter-current a.remove',
             linkFilterItem: '.filter-options-item .item a',
             linkPageNumber: '.pages-items a',
+            directSliderMode: false, //Execute change slider when mouse up
             infinite: false,
             next: {
               cta: 'Next',
-              sentence:  '%current / %size'
+              sentence:  '%current / %size',
+              className:  'link'
             },
             items: {
                 size: 0,
@@ -30,11 +31,68 @@ define([
             },
         },
         _create: function () {
-            this._bind();
+            this._bindFilter();
+            this._bindFacet();
+            this._bindToolbar();
+            this._bindInfinite();
             this.current_href = window.location.href;
             this.infiniteLoad();
         },
-        _bind: function () {
+        sliderChange: function(url) {
+            if (this.options.directSliderMode) {
+                this.updateLayer(url);
+            }
+        },
+        _bindFilter: function() {
+            let self = this;
+            $(document).off('click', self.options.linkFilterRemove);
+            $(document).off('click', self.options.linkFilterItem);
+            $(document).on('click', self.options.linkFilterRemove, function (e) {
+                self.updateLayer(this.href);
+                e.preventDefault();
+            });
+            $(document).on('click', self.options.linkFilterItem, function (e) {
+                if (e.target.tagName !== 'A') {
+                    self.updateLayer(this.href);
+                }
+                e.preventDefault();
+            });
+        },
+        _bindFacet: function () {
+            let self = this;
+            $(document).off('click', self.options.linkSwatchOption);
+            $(document).on('click', self.options.linkSwatchOption, function (e) {
+                self.updateLayer(this.href);
+                e.preventDefault();
+            });
+        },
+        _unbindFacet: function() {
+            let self = this;
+            $(document).off('click', self.options.linkSwatchOption);
+            $(document).off('click', self.options.linkFilterRemove);
+            $(document).off('click', self.options.linkFilterItem);
+            $(document).on('click', self.options.linkSwatchOption, function (e) {
+                e.preventDefault();
+            });
+            $(document).on('click', self.options.linkFilterRemove, function (e) {
+                e.preventDefault();
+            });
+            $(document).on('click', self.options.linkFilterItem, function (e) {
+                if (e.target.tagName !== 'INPUT') {
+                    let filter = uiRegistry.get('destinataireFilter');
+                    let checkbox = $(this).find('input');
+                    if (checkbox.is(':checked')) {
+                        checkbox.prop("checked", false);
+                        filter.unSelectItem($(this).find('span:first').html());
+                    } else {
+                        checkbox.prop("checked", true);
+                        filter.selectItem($(this).find('span:first').html());
+                    }
+                }
+                e.preventDefault();
+            });
+        },
+        _bindToolbar: function () {
             let self = this;
 
             $(document).on('click', self.options.modeControl, function (e) {
@@ -57,28 +115,12 @@ define([
                 e.preventDefault();
             });
 
-            $(document).on('click', self.options.linkSwatchOption, function (e) {
-                self.updateLayer(this.href);
-                e.preventDefault();
-            });
-
-            $(document).on('click', self.options.linkFilterRemove, function (e) {
-                self.updateLayer(this.href);
-                e.preventDefault();
-            });
-
-            $(document).on('click', self.options.linkFilterItem, function (e) {
-                if (e.target.tagName !== 'A') {
-                    self.updateLayer(this.href);
-                }
-                e.preventDefault();
-            });
-
             $(document).on('click', self.options.linkPageNumber, function (e) {
                 self.updateLayer(this.href);
                 e.preventDefault();
             });
-
+        },
+        _bindInfinite: function() {
             $(document).on('click', 'div.infinite a.link', function (e) {
                 self._loadPage($(this).attr('href'));
                 e.preventDefault();
@@ -105,7 +147,7 @@ define([
                 html += '<div class="sentence">' + sentence + '</div>';
             }
 
-            html += '<a href="' + newUrl + '" class="link">' + this.options.next.cta + '</a>';
+            html += '<a href="' + newUrl + '" class="link ' + this.options.next.className + '">' + this.options.next.cta + '</a>';
             html += '</div>';
             return html;
         },
@@ -139,15 +181,6 @@ define([
             $(self.options.listFilterContainer).replaceWith(response.listFilterOptions);
             $('.category-list-view').html(response.productList);
             $(self.options.listFilterContainer).trigger('contentUpdated');
-
-            _.each(response.filterItems, function(items, filterName) {
-                uiRegistry.filter(function(component){
-                    if (component.name === filterName) {
-                        uiRegistry.get(component).reloadItems(items)
-                    }
-                });
-            });
-
             $(document).trigger('contentUpdated');
             if ($.fn.applyBindings != undefined) {
                 $(self.options.listFilterContainer).applyBindings();

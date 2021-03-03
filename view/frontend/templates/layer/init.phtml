@@ -13,6 +13,7 @@ use Web200\ElasticsuiteAjax\Block\Catalog;
                     "size": "<?= $this->getSize() ?>",
                     "curPage": "<?= $this->getCurPage() ?>"
                 },
+                "directSliderMode": false,
                 "infinite": <?= $block->isInfiniteActive() ? 'true' : 'false' ?>
             }
         }

@@ -26,8 +26,23 @@ define(
                 });
                 return finalItems;
             },
-            reloadItems: function(items) {
-                this.items = items.map(this.addItemId.bind(this));
+            selectItem: function(label) {
+                let self = this;
+                $.each(self.items, function( index, item ) {
+                    if (item.label == label) {
+                        item.is_selected = true;
+                        return;
+                    }
+                });
+            },
+            unSelectItem: function(label) {
+                let self = this;
+                $.each(self.items, function( index, item ) {
+                    if (item.label == label) {
+                        item.is_selected = false;
+                        return;
+                    }
+                });
             },
             reload: function () {
                 this.fulltextSearch(null);

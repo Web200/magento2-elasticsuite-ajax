@@ -14,7 +14,7 @@ define([
             let filterIndex = 0;
             let findCurrentValue = false;
             let multipleFilterValues = this.getMultipleFilterValues();
-            $.each(self.getAllFilterValues(), function (indexFilter, filterName) {
+            $.each(self.getUrlAllFilterValues(), function (indexFilter, filterName) {
                 let values = self.getFilterValues(filterName);
                 $.each(values, function (index, itemLabel) {
                     if (!(currentFilterName === filterName && itemLabel === currentLabel)) {
@@ -39,15 +39,43 @@ define([
             }
             return encodeURI(self.baseURL + '?' + params.join('&'));
         },
+        buildSubmitUrl: function() {
+            let self = this;
+            let params = [];
+            let multipleFilterValues = this.getMultipleFilterValues();
+            uiRegistry.filter(function(uiItem){
+                if (uiItem.name && uiItem.name.match(/Filter$/)) {
+                    let index = 0;
+                    _.each(uiItem.items, function(item) {
+                        if (item.is_selected) {
+                            params.push(uiItem.filterName + '[' + index + ']=' + item.label);
+                            index++;
+                        }
+                    });
+                }
+            });
+            
+            $('.smile-es-range-slider').each(function() {
+                let range = {
+                    from : this.from * (1 / this.rate),
+                    to   : this.to * (1 / this.rate)
+                };
+                let url = this.options.requestVar;
+
+                params.push(uiItem.filterName + '=' + from + '-' + to);
+            });
+
+            return encodeURI(self.baseURL + '?' + params.join('&'));
+        },
         getFilterValues: function (filterName) {
             return this.urlParams.getAll(filterName);
         },
-        getAllFilterValues: function () {
+        getUrlAllFilterValues: function () {
             return _.uniq(Array.from(this.urlParams.keys()));
         },
         getMultipleFilterValues: function () {
             let filterValue = [];
-            requirejs('uiRegistry').filter(function(item){
+            uiRegistry.filter(function(item){
                 if (item.name && item.name.match(/Filter$/)) {
                     filterValue.push(item.filterName);
                 }
