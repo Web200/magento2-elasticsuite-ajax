@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Web200\ElasticsuiteAjax\Block;
 
 use Magento\Catalog\Block\Product\ListProduct;
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Template;
 use Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\Fulltext\Collection;
 use Web200\ElasticsuiteAjax\Provider\Config;
@@ -28,15 +29,23 @@ class Catalog extends Template
      * @var Config $config
      */
     protected $config;
+    /**
+     * Json
+     *
+     * @var Json $json
+     */
+    protected $json;
 
     /**
      * Catalog constructor.
      *
+     * @param Json             $json
      * @param Config           $config
      * @param Template\Context $context
      * @param array            $data
      */
     public function __construct(
+        Json $json,
         Config $config,
         Template\Context $context,
         array $data = []
@@ -44,6 +53,7 @@ class Catalog extends Template
         parent::__construct($context, $data);
 
         $this->config = $config;
+        $this->json   = $json;
     }
 
     /**
@@ -63,11 +73,38 @@ class Catalog extends Template
     }
 
     /**
+     * Get js config
+     *
+     * @return string
+     */
+    public function getJsConfig(): string
+    {
+        /** @var mixed[] $jsConfig */
+        $jsConfig             = [];
+        $jsConfig['items']    = [
+            'pageSize' => $this->getPageSize(),
+            'size'     => $this->getSize(),
+            'curPage'  => $this->getCurPage(),
+        ];
+        $jsConfig['slider']   = [
+            'directMode' => $this->config->isValue(Config::SLIDER_DIRECT_MODE_ACTIVE),
+        ];
+        $jsConfig['infinite'] = [
+            'active'          => $this->config->isValue(Config::INFINITE_ACTIVE),
+            'buttonLabel'     => $this->config->getValue(Config::INFINITE_BUTTON_LABEL),
+            'buttonSentence'  => $this->config->getValue(Config::INFINITE_BUTTON_SENTENCE),
+            'buttonClassName' => $this->config->getValue(Config::INFINITE_BUTTON_CLASS_NAME)
+        ];
+
+        return $this->json->serialize($jsConfig);
+    }
+
+    /**
      * Get size
      *
      * @return int
      */
-    public function getSize(): int
+    protected function getSize(): int
     {
         return (int)$this->getProductList()->getSize();
     }
@@ -77,7 +114,7 @@ class Catalog extends Template
      *
      * @return int
      */
-    public function getPageSize(): int
+    protected function getPageSize(): int
     {
         return (int)$this->getProductList()->getPageSize();
     }
@@ -87,18 +124,8 @@ class Catalog extends Template
      *
      * @return int
      */
-    public function getCurPage(): int
+    protected function getCurPage(): int
     {
         return (int)$this->getProductList()->getCurPage();
-    }
-
-    /**
-     * Is infinite active
-     *
-     * @return bool
-     */
-    public function isInfiniteActive(): bool
-    {
-        return $this->config->isInfiniteActive();
     }
 }

@@ -17,12 +17,14 @@ define([
             linkFilterRemove: '.filter-current a.remove',
             linkFilterItem: '.filter-options-item .item a',
             linkPageNumber: '.pages-items a',
-            directSliderMode: false, //Execute change slider when mouse up
-            infinite: false,
-            next: {
-              cta: 'Next',
-              sentence:  '%current / %size',
-              className:  'link'
+            slider: {
+              directMode: false
+            },
+            infinite: {
+                active: false,
+                buttonLabel: 'Next',
+                buttonSentence: '%current / %size',
+                buttonClassName: ''
             },
             items: {
                 size: 0,
@@ -37,9 +39,15 @@ define([
             this._bindInfinite();
             this.current_href = window.location.href;
             this.infiniteLoad();
+            this.sliderLoad();
+        },
+        sliderLoad: function() {
+            if (this.options.slider.directMode) {
+                $('.smile-es-range-slider .actions-toolbar').hide();
+            }
         },
         sliderChange: function(url) {
-            if (this.options.directSliderMode) {
+            if (this.options.slider.directMode) {
                 this.updateLayer(url);
             }
         },
@@ -121,13 +129,14 @@ define([
             });
         },
         _bindInfinite: function() {
+            let self = this;
             $(document).on('click', 'div.infinite a.link', function (e) {
                 self._loadPage($(this).attr('href'));
                 e.preventDefault();
             });
         },
         infiniteLoad: function() {
-            if (!this.options.infinite) {
+            if (!this.options.infinite.active) {
                 return;
             }
             $('.infinite').remove();
@@ -138,7 +147,7 @@ define([
         },
         _infiniteText: function(newUrl) {
             let html = '<div class="infinite">';
-            let sentence = this.options.next.sentence
+            let sentence = this.options.infinite.buttonSentence
             .replace(/%current/, this.options.items.pageSize * this.options.items.curPage)
             .replace(/%size/, this.options.items.size);
 
@@ -147,7 +156,7 @@ define([
                 html += '<div class="sentence">' + sentence + '</div>';
             }
 
-            html += '<a href="' + newUrl + '" class="link ' + this.options.next.className + '">' + this.options.next.cta + '</a>';
+            html += '<a href="' + newUrl + '" class="link ' + this.options.infinite.buttonClassName + '">' + this.options.infinite.buttonLabel + '</a>';
             html += '</div>';
             return html;
         },
@@ -192,6 +201,7 @@ define([
                 }
             });
             self.infiniteLoad();
+            self.sliderLoad();
         },
         _loadPage: function (url) {
             let self = this;
@@ -223,6 +233,7 @@ define([
             $(self.options.listFilterContainer).trigger('contentUpdated');
             $(document).trigger('contentUpdated');
             self.infiniteLoad();
+            self.sliderLoad();
         }
     });
     return $.mage.elasticsuiteAjax;

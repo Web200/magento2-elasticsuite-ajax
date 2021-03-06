@@ -7,6 +7,9 @@
             </general>
             <infinite>
                 <active>1</active>
+                <button_label>Next</button_label>
+                <button_sentence>%current / %size</button_sentence>
+                <button_class_name></button_class_name>
             </infinite>
         </smile_elasticsuite_ajax_settings>
     </default>

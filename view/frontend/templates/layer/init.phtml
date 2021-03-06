@@ -5,17 +5,5 @@ use Web200\ElasticsuiteAjax\Block\Catalog;
 ?>
 <?php /** @var Catalog $block */ ?>
 <script type="text/x-magento-init">
-    {
-        "body": {
-            "elasticsuiteAjax": {
-                "items": {
-                    "pageSize": "<?= $this->getPageSize() ?>",
-                    "size": "<?= $this->getSize() ?>",
-                    "curPage": "<?= $this->getCurPage() ?>"
-                },
-                "directSliderMode": false,
-                "infinite": <?= $block->isInfiniteActive() ? 'true' : 'false' ?>
-            }
-        }
-    }
+    {"body": {"elasticsuiteAjax": <?= $block->getJsConfig() ?>}}
 </script>

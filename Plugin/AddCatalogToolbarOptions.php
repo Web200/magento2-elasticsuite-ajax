@@ -65,7 +65,7 @@ class AddCatalogToolbarOptions
         if (!isset($jsonData['productListToolbarForm'])) {
             return $result;
         }
-        $jsonData['productListToolbarForm']['ajax'] = $this->config->isActive();
+        $jsonData['productListToolbarForm']['ajax'] = $this->config->isValue(Config::GENERAL_ACTIVE);
 
         return $this->json->serialize($jsonData);
     }

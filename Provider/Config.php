@@ -31,7 +31,31 @@ class Config
      */
     public const INFINITE_ACTIVE = 'smile_elasticsuite_ajax_settings/infinite/active';
     /**
-     * Description $scopeConfig field
+     * Infinite Button label
+     *
+     * @var string INFINITE_BUTTON_LABEL
+     */
+    public const INFINITE_BUTTON_LABEL = 'smile_elasticsuite_ajax_settings/infinite/button_label';
+    /**
+     * Infinite Button Sentence
+     *
+     * @var string INFINITE_BUTTON_SENTENCE
+     */
+    public const INFINITE_BUTTON_SENTENCE = 'smile_elasticsuite_ajax_settings/infinite/button_sentence';
+    /**
+     * Infinite Button Class name
+     *
+     * @var string INFINITE_BUTTON_CLASS_NAME
+     */
+    public const INFINITE_BUTTON_CLASS_NAME = 'smile_elasticsuite_ajax_settings/infinite/button_class_name';
+    /**
+     * Slider direct mode active
+     *
+     * @var string SLIDER_DIRECT_MODE_ACTIVE
+     */
+    public const SLIDER_DIRECT_MODE_ACTIVE = 'smile_elasticsuite_ajax_settings/slider/direct_mode_active';
+    /**
+     * Scope config interface
      *
      * @var ScopeConfigInterface $scopeConfig
      */
@@ -51,32 +75,34 @@ class Config
     }
 
     /**
-     * Is active
+     * Is value
      *
-     * @param mixed $store
+     * @param string $path
+     * @param mixed  $store
      *
      * @return bool
      */
-    public function isActive($store = null): bool
+    public function isValue(string $path, $store = null): bool
     {
         return (bool)$this->scopeConfig->getValue(
-            self::GENERAL_ACTIVE,
+            $path,
             ScopeInterface::SCOPE_STORES,
             $store
         );
     }
 
     /**
-     * Is active
+     * Get value
      *
-     * @param mixed $store
+     * @param string $path
+     * @param mixed  $store
      *
-     * @return bool
+     * @return string
      */
-    public function isInfiniteActive($store = null): bool
+    public function getValue(string $path, $store = null): string
     {
-        return (bool)$this->scopeConfig->getValue(
-            self::INFINITE_ACTIVE,
+        return (string)$this->scopeConfig->getValue(
+            $path,
             ScopeInterface::SCOPE_STORES,
             $store
         );

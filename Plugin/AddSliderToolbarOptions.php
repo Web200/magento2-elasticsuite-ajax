@@ -65,7 +65,7 @@ class AddSliderToolbarOptions
         $filter = $subject->getFilter();
 
         $jsonData['requestVar'] = $filter->getRequestVar();
-        $jsonData['ajax'] = $this->config->isActive();
+        $jsonData['ajax'] = $this->config->isValue(Config::GENERAL_ACTIVE);
 
         return $this->json->serialize($jsonData);
     }
