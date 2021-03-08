@@ -54,15 +54,12 @@ define([
                     });
                 }
             });
-            
-            $('.smile-es-range-slider').each(function() {
-                let range = {
-                    from : this.from * (1 / this.rate),
-                    to   : this.to * (1 / this.rate)
-                };
-                let url = this.options.requestVar;
 
-                params.push(uiItem.filterName + '=' + from + '-' + to);
+            $('.smile-es-range-slider').each(function() {
+                let urlValues = $(this).rangeSlider('getUrlValues');
+                if (urlValues) {
+                    params.push(urlValues);
+                }
             });
 
             return encodeURI(self.baseURL + '?' + params.join('&'));

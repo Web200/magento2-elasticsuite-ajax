@@ -87,7 +87,8 @@ define([
             });
             $(document).on('click', self.options.linkFilterItem, function (e) {
                 if (e.target.tagName !== 'INPUT') {
-                    let filter = uiRegistry.get('destinataireFilter');
+                    let filterName = $(this).find('input').attr('id').split('_')[0];
+                    let filter = uiRegistry.get(filterName);
                     let checkbox = $(this).find('input');
                     if (checkbox.is(':checked')) {
                         checkbox.prop("checked", false);

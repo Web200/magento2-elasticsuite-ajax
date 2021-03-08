@@ -37,6 +37,19 @@ define([
                 };
                 let url = mageTemplate(this.options.urlTemplate)(range);
                 $('body').elasticsuiteAjax('sliderChange', url);
+            },
+            getUrlValues: function() {
+                let range = {
+                    from : this.from * (1 / this.rate),
+                    to   : this.to * (1 / this.rate)
+                };
+                let filterName = this.options.requestVar;
+
+                if (this.minValue != range.from || this.maxValue != range.to) {
+                    return filterName + '=' + range.from + '-' + range.to;
+                }
+
+                return null;
             }
         });
 
