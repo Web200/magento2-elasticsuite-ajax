@@ -18,7 +18,7 @@ define([
             linkFilterItem: '.filter-options-item .item a',
             linkPageNumber: '.pages-items a',
             slider: {
-              directMode: false
+                directMode: false
             },
             infinite: {
                 active: false,
@@ -131,7 +131,7 @@ define([
         },
         _bindInfinite: function() {
             let self = this;
-            $(document).on('click', 'div.infinite a.link', function (e) {
+            $(document).on('click', 'div.infinite a', function (e) {
                 self._loadPage($(this).attr('href'));
                 e.preventDefault();
             });
@@ -157,7 +157,7 @@ define([
                 html += '<div class="sentence">' + sentence + '</div>';
             }
 
-            html += '<a href="' + newUrl + '" class="link ' + this.options.infinite.buttonClassName + '">' + this.options.infinite.buttonLabel + '</a>';
+            html += '<a href="' + newUrl + '" class="' + this.options.infinite.buttonClassName + '">' + this.options.infinite.buttonLabel + '</a>';
             html += '</div>';
             return html;
         },
