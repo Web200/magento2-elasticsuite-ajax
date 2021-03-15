@@ -119,7 +119,7 @@ define([
                 e.preventDefault();
             });
 
-            $(document).on('click', self.options.orderControl, function (e) {
+            $(document).on('change', self.options.orderControl, function (e) {
                 self.updateLayer(self.current_href, 'product_list_order', e.currentTarget.options[e.currentTarget.selectedIndex].value);
                 e.preventDefault();
             });
