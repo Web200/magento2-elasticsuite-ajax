@@ -6,6 +6,7 @@ namespace Web200\ElasticsuiteAjax\Plugin;
 
 use Magento\Catalog\Block\Product\ListProduct;
 use Magento\Catalog\Controller\Category\View;
+use Magento\Framework\App\Http\Context;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\View\LayoutInterface;
@@ -29,16 +30,25 @@ class AfterCategoryView
      * @var JsonFactory $resultJsonFactory
      */
     protected $resultJsonFactory;
+    /**
+     * Context
+     *
+     * @var Context $context
+     */
+    protected $context;
 
     /**
      * AfterCategoryView constructor.
      *
      * @param JsonFactory $resultJsonFactory
+     * @param Context     $context
      */
     public function __construct(
-        JsonFactory $resultJsonFactory
+        JsonFactory $resultJsonFactory,
+        Context $context
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
+        $this->context           = $context;
     }
 
     /**
@@ -56,6 +66,8 @@ class AfterCategoryView
         if (!$isAjax) {
             return $page;
         }
+
+        $this->context->setValue('ajax', true, false);
         /** @var LayoutInterface $layout */
         $layout = $page->getLayout();
         /** @var ListProduct $productList */
