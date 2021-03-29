@@ -8,4 +8,12 @@
         <plugin name="web200_elasticsuite_ajax_add_slider_toobar_options"
                 type="Web200\ElasticsuiteAjax\Plugin\AddSliderToolbarOptions"/>
     </type>
+    <type name="Magento\Catalog\Controller\Category\View">
+        <plugin sortOrder="1" name="web200_elasticsuite_after_category_view"
+                type="Web200\ElasticsuiteAjax\Plugin\AfterCategoryView"/>
+    </type>
+    <type name="Magento\CatalogSearch\Controller\Result\Index">
+        <plugin sortOrder="1" name="web200_elasticsuite_after_search_view"
+                type="Web200\ElasticsuiteAjax\Plugin\AfterSearchView"/>
+    </type>
 </config>

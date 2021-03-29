@@ -11,11 +11,11 @@ use Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\Fulltext\Collection;
 use Web200\ElasticsuiteAjax\Provider\Config;
 
 /**
- * Class Catalog
+ * Class Search
  *
  * @package Web200\ElasticsuiteAjax\Block
  */
-class Catalog extends Ajax
+class Search extends Ajax
 {
     /**
      * Get product list collection
@@ -26,7 +26,7 @@ class Catalog extends Ajax
     {
         if ($this->productCollection === null) {
             /** @var ListProduct $productList */
-            $productList             = $this->getLayout()->getBlock('category.products.list');
+            $productList             = $this->getLayout()->getBlock('search_result_list');
             $this->productCollection = $productList->getLoadedProductCollection();
         }
 

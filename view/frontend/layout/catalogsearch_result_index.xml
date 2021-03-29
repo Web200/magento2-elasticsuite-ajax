@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <move element="search.result" destination="category.list.view" />
+        <referenceContainer name="content">
+            <container name="category.list.view" htmlTag="div" htmlClass="category-list-view" />
+            <block class="Web200\ElasticsuiteAjax\Block\Search" name="web200.navigation.ajax"
+                   template="Web200_ElasticsuiteAjax::layer/init.phtml" ifconfig="smile_elasticsuite_ajax_settings/general/active" />
+        </referenceContainer>
+    </body>
+</page>
