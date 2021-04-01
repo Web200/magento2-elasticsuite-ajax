@@ -62,7 +62,22 @@ define([
                 }
             });
 
+            let paramsQ = self.getUrlParam('q');
+            if (paramsQ) {
+                params.push(paramsQ);
+            }
+
             return encodeURI(self.baseURL + '?' + params.join('&'));
+        },
+        getUrlParam: function(key) {
+            let param = '';
+            _.each(Array.from(this.urlParams), function(row) {
+                if (row[0] == key) {
+                    param = key + '=' + row[1];
+                    return true;
+                }
+            });
+            return param;
         },
         getFilterValues: function (filterName) {
             return this.urlParams.getAll(filterName);
