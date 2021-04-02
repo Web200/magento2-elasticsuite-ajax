@@ -83,11 +83,13 @@ class AjaxResponse
 
         /** @var ListProduct $productList */
         $productList = $this->layout->getBlock($this->getProductListBlock());
+        //Need to calculate page size
+        $htmlContent = $productList->toHtml();
         /** @var Collection $productList */
         $productCollection = $productList->getLoadedProductCollection();
         $resultJson        = $this->resultJsonFactory->create();
         $resultJson->setData([
-            'productList'       => $productList->toHtml(),
+            'productList'       => $htmlContent,
             'listFilterOptions' => $this->layout->getBlock($this->getLeftNavBlock())->toHtml(),
             'filterItems'       => $this->getFilterItems(),
             'pageSize'          => $productCollection->getPageSize(),
