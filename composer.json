@@ -2,7 +2,7 @@
     "name": "web200/magento-elasticsuite-ajax",
     "description": "Magento 2 Module to add ajax navigation to elasticsuite module",
     "require": {
-        "php": "^7.0"
+        "php": "^7.0|^8.0"
     },
     "type": "magento2-module",
     "license": [
