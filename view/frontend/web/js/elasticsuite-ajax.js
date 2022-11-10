@@ -105,22 +105,22 @@ define([
             let self = this;
 
             $(document).on('click', self.options.modeControl, function (e) {
-                self.updateLayer(self.current_href, 'product_list_mode', $(e.currentTarget).data('value'));
+                self.updateLayer(window.location.href, 'product_list_mode', $(e.currentTarget).data('value'));
                 e.preventDefault();
             });
 
             $(document).on('click', self.options.limitControl, function (e) {
-                self.updateLayer(self.current_href, 'product_list_limit', e.currentTarget.options[e.currentTarget.selectedIndex].value);
+                self.updateLayer(window.location.href, 'product_list_limit', e.currentTarget.options[e.currentTarget.selectedIndex].value);
                 e.preventDefault();
             });
 
             $(document).on('click', self.options.directionControl, function (e) {
-                self.updateLayer(self.current_href, 'product_list_dir', $(e.currentTarget).data('value'));
+                self.updateLayer(window.location.href, 'product_list_dir', $(e.currentTarget).data('value'));
                 e.preventDefault();
             });
 
             $(document).on('change', self.options.orderControl, function (e) {
-                self.updateLayer(self.current_href, 'product_list_order', e.currentTarget.options[e.currentTarget.selectedIndex].value);
+                self.updateLayer(window.location.href, 'product_list_order', e.currentTarget.options[e.currentTarget.selectedIndex].value);
                 e.preventDefault();
             });
 
