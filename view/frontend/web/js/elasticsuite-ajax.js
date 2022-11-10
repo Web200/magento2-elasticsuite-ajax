@@ -168,7 +168,7 @@ define([
                 url: newUrl,
                 type: 'get',
                 dataType: 'json',
-                cache: false,
+                cache: true,
                 beforeSend: function () {
                     $('body').trigger('processStart');
                 },
