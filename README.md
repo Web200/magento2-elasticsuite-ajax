@@ -13,8 +13,19 @@ $ composer require "web200/magento-elasticsuite-ajax":"*"
 * Ajax navigation on category pages (Categories / Swatches / List)
 * Infinite navigation pages. (Can be enable / disable in Store > Configuration > Elasticsuite > Ajax Settings)
 
+## Varnish
 
+In order to cache classic page and xhr request you need to set different cache in varnish. Thanks @mfickers
 
-## Demo
+```
+sub vcl_hash {
+    ...
 
-[![IMAGE ALT TEXT](https://pic.infini.fr/rScn8xFj/c7AaXbaj.jpg)](https://www.youtube.com/watch?v=UYvmDOHwzuM "Elasticsuite Ajax Navigation")
+    # Sort AJAX requests distinct from regular requests
+    if (req.http.X-Requested-With == "XMLHttpRequest"){
+        hash_data(req.http.X-Requested-With);
+    }
+
+    ...
+}
+```
