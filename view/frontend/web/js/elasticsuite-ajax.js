@@ -109,7 +109,7 @@ define([
                 e.preventDefault();
             });
 
-            $(document).on('click', self.options.limitControl, function (e) {
+            $(document).on('change', self.options.limitControl, function (e) {
                 self.updateLayer(window.location.href, 'product_list_limit', e.currentTarget.options[e.currentTarget.selectedIndex].value);
                 e.preventDefault();
             });
