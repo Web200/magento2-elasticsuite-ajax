@@ -118,7 +118,7 @@ class AjaxResponse
             if (is_a($filter, Attribute::class)) {
                 $items[$datascope] = [];
                 foreach ($filter->getItems() as $item) {
-                    $items[$datascope][] = $item->toArray(['label', 'count', 'url', 'is_selected']);
+                    $items[$datascope][] = $item->toArray(['value', 'label', 'count', 'url', 'is_selected']);
                 }
             }
         }

@@ -15,4 +15,8 @@
     <type name="Magento\Framework\App\PageCache\Identifier">
         <plugin name="web200_elasticsuite_add_ajax_to_cache" type="Web200\ElasticsuiteAjax\Plugin\AddAjaxToCache"/>
     </type>
+    <type name="Smile\ElasticsuiteCatalog\Block\Navigation\Renderer\Attribute">
+        <plugin name="web200_elasticsuite_add_value_to_item" type="Web200\ElasticsuiteAjax\Plugin\AddValueToItem"/>
+    </type>
+    <preference for="Smile\ElasticsuiteCatalog\Model\Layer\Filter\Attribute" type="Web200\ElasticsuiteAjax\Model\Layer\Filter\Attribute"/>
 </config>

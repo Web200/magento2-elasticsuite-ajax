@@ -15,30 +15,30 @@ define(
                 let finalItems = [];
 
                 $.each(items, function( index, item ) {
-                    if (values.includes(item.label)) {
+                    if (values.includes(item.value)) {
                         item.is_selected = true;
                     } else {
                         item.is_selected = false;
                     }
-                    item.url = elasticsuiteUrl.buildFilterUrl(self.filterName, item.label);
+                    item.url = elasticsuiteUrl.buildFilterUrl(self.filterName, item.value);
 
                     finalItems.push(item);
                 });
                 return finalItems;
             },
-            selectItem: function(label) {
+            selectItem: function(value) {
                 let self = this;
                 $.each(self.items, function( index, item ) {
-                    if (item.label == label) {
+                    if (item.value == value) {
                         item.is_selected = true;
                         return;
                     }
                 });
             },
-            unSelectItem: function(label) {
+            unSelectItem: function(value) {
                 let self = this;
                 $.each(self.items, function( index, item ) {
-                    if (item.label == label) {
+                    if (item.value == value) {
                         item.is_selected = false;
                         return;
                     }

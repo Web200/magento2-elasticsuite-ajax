@@ -1,248 +1,117 @@
 define([
     'jquery',
-    'elasticsuiteUrl',
-    'uiRegistry',
-    'jquery-ui-modules/widget'
-], function ($, elasticsuiteUrl, uiRegistry) {
+    'underscore',
+    'uiRegistry'
+], function ($, _, uiRegistry) {
     'use strict';
 
-    $.widget('mage.elasticsuiteAjax', {
-        options: {
-            modeControl: '[data-role="mode-switcher"]',
-            directionControl: '[data-role="direction-switcher"]',
-            orderControl: '[data-role="sorter"]',
-            limitControl: '[data-role="limiter"]',
-            listFilterContainer: '#layered-filter-block',
-            linkSwatchOption: 'a.swatch-option-link-layered',
-            linkFilterRemove: '.filter-current a.remove',
-            linkFilterItem: '.filter-options-item .item a',
-            linkPageNumber: '.pages-items a',
-            slider: {
-                directMode: false
-            },
-            infinite: {
-                active: false,
-                buttonLabel: 'Next',
-                buttonSentence: '%current / %size',
-                buttonClassName: ''
-            },
-            items: {
-                size: 0,
-                pageSize: 0,
-                curPage: 0
-            },
-        },
-        _create: function () {
-            this._bindFilter();
-            this._bindFacet();
-            this._bindToolbar();
-            this._bindInfinite();
-            this.current_href = window.location.href;
-            this.infiniteLoad();
-            this.sliderLoad();
-        },
-        sliderLoad: function() {
-            if (this.options.slider.directMode) {
-                $('.smile-es-range-slider .actions-toolbar').hide();
-            }
-        },
-        sliderChange: function(url) {
-            if (this.options.slider.directMode) {
-                this.updateLayer(url);
-            }
-        },
-        _bindFilter: function() {
+    return {
+        baseURL: window.location.protocol + '//' + window.location.host + window.location.pathname,
+        urlParams: new URLSearchParams(decodeURI(window.location.search).replace(/\[(\d*)\]/g, '')),
+        buildFilterUrl: function (currentFilterName, currentValue) {
             let self = this;
-            $(document).off('click', self.options.linkFilterRemove);
-            $(document).off('click', self.options.linkFilterItem);
-            $(document).on('click', self.options.linkFilterRemove, function (e) {
-                self.updateLayer(this.href);
-                e.preventDefault();
-            });
-            $(document).on('click', self.options.linkFilterItem, function (e) {
-                if (e.target.tagName !== 'A') {
-                    self.updateLayer(this.href);
-                }
-                e.preventDefault();
-            });
-        },
-        _bindFacet: function () {
-            let self = this;
-            $(document).off('click', self.options.linkSwatchOption);
-            $(document).on('click', self.options.linkSwatchOption, function (e) {
-                self.updateLayer(this.href);
-                e.preventDefault();
-            });
-        },
-        _unbindFacet: function() {
-            let self = this;
-            $(document).off('click', self.options.linkSwatchOption);
-            $(document).off('click', self.options.linkFilterRemove);
-            $(document).off('click', self.options.linkFilterItem);
-            $(document).on('click', self.options.linkSwatchOption, function (e) {
-                e.preventDefault();
-            });
-            $(document).on('click', self.options.linkFilterRemove, function (e) {
-                e.preventDefault();
-            });
-            $(document).on('click', self.options.linkFilterItem, function (e) {
-                if (e.target.tagName !== 'INPUT') {
-                    let filterName = $(this).find('input').attr('id').split('_')[0];
-                    let filter = uiRegistry.get(filterName);
-                    let checkbox = $(this).find('input');
-                    if (checkbox.is(':checked')) {
-                        checkbox.prop("checked", false);
-                        filter.unSelectItem($(this).find('span:first').html());
+            let params = [];
+            let filterIndex = 0;
+            let findCurrentValue = false;
+            let multipleFilterValues = this.getMultipleFilterValues();
+            $.each(self.getUrlAllFilterValues(), function (indexFilter, filterName) {
+                let values = self.getFilterValues(filterName);
+                $.each(values, function (index, itemValue) {
+                    if (!(currentFilterName === filterName && itemValue === currentValue)) {
+                        if (filterName === 'p') {
+                            return false;
+                        }
+                        if (_.contains(multipleFilterValues, filterName)) {
+                            params.push(filterName + '[' + index + ']=' + itemValue);
+                        } else {
+                            params.push(filterName + '=' + itemValue);
+                        }
                     } else {
-                        checkbox.prop("checked", true);
-                        filter.selectItem($(this).find('span:first').html());
+                        findCurrentValue = true;
                     }
-                }
-                e.preventDefault();
-            });
-        },
-        _bindToolbar: function () {
-            let self = this;
-
-            $(document).on('click', self.options.modeControl, function (e) {
-                self.updateLayer(window.location.href, 'product_list_mode', $(e.currentTarget).data('value'));
-                e.preventDefault();
-            });
-
-            $(document).on('click', self.options.limitControl, function (e) {
-                self.updateLayer(window.location.href, 'product_list_limit', e.currentTarget.options[e.currentTarget.selectedIndex].value);
-                e.preventDefault();
-            });
-
-            $(document).on('click', self.options.directionControl, function (e) {
-                self.updateLayer(window.location.href, 'product_list_dir', $(e.currentTarget).data('value'));
-                e.preventDefault();
-            });
-
-            $(document).on('change', self.options.orderControl, function (e) {
-                self.updateLayer(window.location.href, 'product_list_order', e.currentTarget.options[e.currentTarget.selectedIndex].value);
-                e.preventDefault();
-            });
-
-            $(document).on('click', self.options.linkPageNumber, function (e) {
-                self.updateLayer(this.href);
-                e.preventDefault();
-            });
-        },
-        _bindInfinite: function() {
-            let self = this;
-            $(document).on('click', 'div.infinite a', function (e) {
-                self._loadPage($(this).attr('href'));
-                e.preventDefault();
-            });
-        },
-        infiniteLoad: function() {
-            if (!this.options.infinite.active) {
-                return;
-            }
-            $('.infinite').remove();
-            if (this.options.items.size > this.options.items.curPage * this.options.items.pageSize) {
-                let newUrl = elasticsuiteUrl._buildUrl(this.current_href, 'p', parseInt(this.options.items.curPage) + 1);
-                $('.products.wrapper').append(this._infiniteText(newUrl));
-            }
-        },
-        _infiniteText: function(newUrl) {
-            let html = '<div class="infinite">';
-            let sentence = this.options.infinite.buttonSentence
-            .replace(/%current/, this.options.items.pageSize * this.options.items.curPage)
-            .replace(/%size/, this.options.items.size);
-
-            html += '<div class="content"></div>';
-            if (sentence!== '') {
-                html += '<div class="sentence">' + sentence + '</div>';
-            }
-
-            html += '<a href="' + newUrl + '" class="' + this.options.infinite.buttonClassName + '">' + this.options.infinite.buttonLabel + '</a>';
-            html += '</div>';
-            return html;
-        },
-        updateLayer: function (url, replaceParam, replaceValue) {
-            let self = this;
-            let newUrl = elasticsuiteUrl._buildUrl(url, replaceParam, replaceValue);
-            $.ajax({
-                url: newUrl,
-                type: 'get',
-                dataType: 'json',
-                cache: true,
-                beforeSend: function () {
-                    $('body').trigger('processStart');
-                },
-                success: function (response) {
-                    self._afterUpdateLayer(response, newUrl);
-                },
-                complete: function () {
-                    $('body').trigger('processStop');
-                }
-            });
-        },
-        _afterUpdateLayer: function(response, newUrl) {
-            let self = this;
-            history.pushState({ }, document.title, newUrl);
-            elasticsuiteUrl.reload();
-            elasticsuiteUrl.reloadAttributeFilter();
-            self.options.items.size = response.size;
-            self.options.items.pageSize = response.pageSize;
-            self.options.items.curPage = response.curPage;
-            $(self.options.listFilterContainer).replaceWith(response.listFilterOptions);
-            $('.category-list-view').html(response.productList);
-            $(self.options.listFilterContainer).trigger('contentUpdated');
-            _.each(response.filterItems, function(items, filterName) {
-                uiRegistry.filter(function(component){
-                    if (component.name === filterName) {
-                        uiRegistry.get(component).reloadItems(items)
+                    if (currentFilterName === filterName) {
+                        filterIndex++;
                     }
                 });
             });
-            $(document).trigger('contentUpdated');
-            if ($.fn.applyBindings != undefined) {
-                $(self.options.listFilterContainer).applyBindings();
+            if (!findCurrentValue) {
+                params.push(currentFilterName + '[' + filterIndex + ']=' + currentValue);
             }
-            $('.swatch-attribute.swatch-layered .swatch-option').each(function(index) {
-                let swatch = $(this);
-                if (swatch.attr('data-option-type') == 1) {
-                    swatch.css('background', swatch.attr('data-option-tooltip-value'));
+            return encodeURI(self.baseURL + '?' + params.join('&'));
+        },
+        buildSubmitUrl: function() {
+            let self = this;
+            let params = [];
+            let multipleFilterValues = this.getMultipleFilterValues();
+            uiRegistry.filter(function(uiItem){
+                if (uiItem.name && uiItem.name.match(/Filter$/)) {
+                    let index = 0;
+                    _.each(uiItem.items, function(item) {
+                        if (item.is_selected) {
+                            params.push(uiItem.filterName + '[' + index + ']=' + item.value);
+                            index++;
+                        }
+                    });
                 }
             });
-            self.infiniteLoad();
-            self.sliderLoad();
-        },
-        _loadPage: function (url) {
-            let self = this;
-            $.ajax({
-                url: url,
-                type: 'get',
-                dataType: 'json',
-                cache: true,
-                beforeSend: function () {
-                    $('body').trigger('processStart');
-                },
-                success: function (response) {
-                    self._afterPageLoad(response, url);
-                },
-                complete: function () {
-                    $('body').trigger('processStop');
-                }
-            });
-        },
-        _afterPageLoad: function(response, newUrl) {
-            let self = this;
-            history.pushState({ }, document.title, newUrl);
-            let responseDom = $($.parseHTML(response.productList));
-            $('.products.list.items').append(responseDom.find('.products.list.items').html());
 
-            self.options.items.size = response.size;
-            self.options.items.pageSize = response.pageSize;
-            self.options.items.curPage = response.curPage;
-            $(self.options.listFilterContainer).trigger('contentUpdated');
-            $(document).trigger('contentUpdated');
-            self.infiniteLoad();
-            self.sliderLoad();
+            $('.smile-es-range-slider').each(function() {
+                let urlValues = $(this).rangeSlider('getUrlValues');
+                if (urlValues) {
+                    params.push(urlValues);
+                }
+            });
+
+            let paramsQ = self.getUrlParam('q');
+            if (paramsQ) {
+                params.push(paramsQ);
+            }
+
+            return encodeURI(self.baseURL + '?' + params.join('&'));
+        },
+        getUrlParam: function(key) {
+            let param = '';
+            _.each(Array.from(this.urlParams), function(row) {
+                if (row[0] == key) {
+                    param = key + '=' + row[1];
+                    return true;
+                }
+            });
+            return param;
+        },
+        getFilterValues: function (filterName) {
+            return this.urlParams.getAll(filterName);
+        },
+        getUrlAllFilterValues: function () {
+            return _.uniq(Array.from(this.urlParams.keys()));
+        },
+        getMultipleFilterValues: function () {
+            let filterValue = [];
+            uiRegistry.filter(function(item){
+                if (item.name && item.name.match(/Filter$/)) {
+                    filterValue.push(item.filterName);
+                }
+            });
+            return filterValue;
+        },
+        _buildUrl: function (url, replaceParam, replaceValue) {
+            if (replaceParam) {
+                var href = new URL(url);
+                href.searchParams.set(replaceParam, replaceValue);
+                return href.toString();
+            } else {
+                return url;
+            }
+        },
+        reloadAttributeFilter: function () {
+            uiRegistry.filter(function(item){
+                if (item.name && item.name.match(/Filter$/)) {
+                    uiRegistry.get(item).reload();
+                }
+            });
+        },
+        reload: function() {
+            this.urlParams = new URLSearchParams(decodeURI(window.location.search).replace(/\[(\d*)\]/g, ''));
         }
-    });
-    return $.mage.elasticsuiteAjax;
+    };
 });
